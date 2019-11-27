@@ -1,7 +1,7 @@
 <template>
   <div class="termmenu">
     <a-menu
-      :defaultSelectedKeys="['6']"
+      :defaultSelectedKeys="[DefalutNum]"
       :defaultOpenKeys="['sub1']"
       style="width: 100%"
       mode="inline"
@@ -26,7 +26,21 @@
 </template>
 <script>
 export default {
-  name: 'Menu'
+  name: 'Menu',
+  props: {
+    pageNum: {
+      type: Number,
+      default: 0
+    }
+  },
+  data () {
+    return {
+      DefalutNum: (this.pageNum + 2).toString()
+    }
+  },
+  mounted () {
+    alert(this.pageNum)
+  }
 }
 </script>
 <style lang="less">

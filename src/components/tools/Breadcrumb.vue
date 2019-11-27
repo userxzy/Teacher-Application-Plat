@@ -14,6 +14,9 @@
         </a-breadcrumb-item>
       </a-breadcrumb>
       <span class="left_title"><span class="yuan">.</span>东莞电子科技学院<span class="yuan">.</span></span>
+      <router-link to="/">
+        <a-button v-if="name !== 'Home'" class="buttton_back">返回首页</a-button>
+      </router-link>
     </a-col>
   </a-row>
 </template>
@@ -35,6 +38,8 @@ export default {
       // this.breadList.push({name: 'index', path: '/dashboard/', meta: {title: '首页'}})
 
       this.name = this.$route.name
+      console.log('name')
+      console.log(this.$route.name)
       this.$route.matched.forEach(item => {
         // item.name !== 'index' && this.breadList.push(item)
         this.breadList.push(item)
@@ -75,5 +80,16 @@ export default {
     display: inline-block;
     height: 100%;
     width: 20px;
+  }
+  .buttton_back {
+    display: inline-block;
+    float: right;
+    background-color: #33A67CFF;
+    height: 30px;
+    line-height: 30px;
+    width: 120px;
+    margin-top: -40px;
+    margin-right: 225px;
+    color: #fff;
   }
 </style>

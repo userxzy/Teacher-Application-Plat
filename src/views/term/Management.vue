@@ -1,6 +1,6 @@
 <template>
   <div class="term" id="Term">
-    <term-menu v-if="visible"></term-menu>
+    <term-menu v-if="visible" :pageNum="pageNum"></term-menu>
     <second-page v-if="!visible" @testChange="testChange"></second-page>
     <term-frist v-if="visible"></term-frist>
   </div>
@@ -14,7 +14,8 @@ export default {
   data () {
     return {
       msg: '',
-      visible: false
+      visible: false,
+      pageNum: ''
     }
   },
   components: {
@@ -24,6 +25,7 @@ export default {
   },
   mounted () {
     document.getElementById('Term').style.height = (document.body.clientHeight - 64 - 60) + 'px'
+    this.pageNum = Number(this.$route.query.id)
   },
   methods: {
     testChange () {

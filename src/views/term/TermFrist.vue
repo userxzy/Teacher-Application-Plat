@@ -2,7 +2,7 @@
   <div class="term_frist">
     <div class="term_innner">
       <span class="list_pic">
-        <span v-for="(item, index) in imgList" :key="index" class="list_inner">
+        <span v-for="(item, index) in imgList" :key="index" class="list_inner" @click="tipTerm(index)">
           <img class="img_style" :src="item.url"/>
           <span class="img_title">{{ item.title }}</span>
         </span>
@@ -37,6 +37,13 @@ export default {
           title: '实操题管理'
         }
       ]
+    }
+  },
+  methods: {
+    tipTerm (inx) {
+      if (inx === 4) {
+        this.$router.push({ path: '/term/practic?id=4' })
+      }
     }
   }
 }

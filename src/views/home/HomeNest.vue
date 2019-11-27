@@ -30,7 +30,7 @@ export default {
   methods: {
     test (val) {
       if (val === 6) {
-        this.$router.push('/term/hands')
+        this.$router.push({ path: '/term/hands?id=4' })
       }
     }
   }

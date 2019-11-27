@@ -71,6 +71,12 @@ export const asyncRouterMap = [
             name: 'hands',
             component: () => import('@/views/term/Management.vue'),
             meta: { title: '试题管理', keepAlive: true, permission: [ 'home' ] }
+          },
+          {
+            path: '/term/practic',
+            name: 'practic',
+            component: () => import('@/views/term/doterm/Practic.vue'),
+            meta: { title: '实操题管理', keepAlive: true, permission: [ 'home' ] }
           }
         ]
       },
