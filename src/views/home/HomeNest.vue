@@ -109,9 +109,9 @@ export default {
     content: '';
   }
   .menu-cell:hover::before {
-    -webkit-transition:all 200ms;
-    -moz-transition:all 200ms;
-    -o-transition:all 200ms;
+    -webkit-transition: all 200ms;
+    -moz-transition: all 200ms;
+    -o-transition: all 200ms;
     -webkit-transform: scale(1.4);
     transform: scale(1.4);
   }

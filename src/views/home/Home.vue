@@ -26,6 +26,7 @@ export default {
 <style lang="less" scoped>
   .content_inner {
     position: absolute;
+    left: 0;
     top: 120px;
     width: 100%;
     height: calc(100% - 120px);
