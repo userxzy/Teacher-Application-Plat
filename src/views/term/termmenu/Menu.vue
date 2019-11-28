@@ -37,9 +37,6 @@ export default {
     return {
       DefalutNum: (this.pageNum + 2).toString()
     }
-  },
-  mounted () {
-    alert(this.pageNum)
   }
 }
 </script>
@@ -47,7 +44,7 @@ export default {
 .termmenu {
   width: 209px;
   height: calc(100% - 120px);
-  background-color: #5c5a5a85;
+  background-color: #E6E6E6FF;
   position: absolute;
   left: 16%;
 }
