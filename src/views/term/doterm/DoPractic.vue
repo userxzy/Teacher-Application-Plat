@@ -1,49 +1,110 @@
 <template>
   <div class="dopractic">
-    <a-row class="doInner">
-      <a-col :span="24">
-        <a-button class="btn1"><a-icon type="plus"/>添加实操题</a-button>
-      </a-col>
-      <a-col :span="24">
-        <span class="knowledge">
-          <a-select
-            class="selectbtn"
-            placeholder="知识点"
-          >
-            <a-select-option value="1">知识点</a-select-option>
-            <a-select-option value="2">2</a-select-option>
-            <a-select-option value="3">3</a-select-option>
-          </a-select>
-        </span>
-        <span class="input_k"><a-input value="" style="height: 40px;"></a-input></span>
-        <a-button class="searchbtn"><a-icon type="search"/>查询</a-button>
-        <a-button class="highbtn"><a-icon style="color: #33A67CFF" type="security-scan"/>高级查询</a-button>
-        <a-button class="bigdelete" @click="start"><a-icon style="color: orange" type="delete"/>批量删除</a-button>
-        <a-button class="resetbtn"><a-icon style="color: #33A67CFF" type="redo"/>重置</a-button>
-      </a-col>
-    </a-row>
-    <a-row class="dotable">
-      <a-col :span="24">
-        <a-table :columns="PracticeColumns" :dataSource="PracticeData" :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" bordered>
-          <template slot="IdRender" slot-scope="text">
-            <span v-if="text === 0"></span>
-            <span v-else>{{ text }}</span>
-          </template>
-          <template slot="StyleRender" slot-scope="text">
-            <span v-if="text === null">
-              <!-- <a-select class="select_in" >
-                <a-select-option value="1">1</a-select-option>
-                <a-select-option value="2">1</a-select-option>
-                <a-select-option value="3">1</a-select-option>
-                <a-select-option value="4">1</a-select-option>
-              </a-select> -->
-              <a-input class="select_in" value="选择题"></a-input>
-            </span>
-            <span v-else>{{ text }}</span>
-          </template>
-        </a-table>
-      </a-col>
-    </a-row>
+    <span v-if="isShow">
+      <a-row class="doInner">
+        <a-col :span="24">
+          <a-button class="btn1" @click="addPractic"><a-icon type="plus"/>添加实操题</a-button>
+        </a-col>
+        <a-col :span="24">
+          <span class="knowledge">
+            <a-select
+              class="selectbtn"
+              placeholder="知识点"
+            >
+              <a-select-option value="1">知识点</a-select-option>
+              <a-select-option value="2">2</a-select-option>
+              <a-select-option value="3">3</a-select-option>
+            </a-select>
+          </span>
+          <span class="input_k"><a-input value="" style="height: 40px;"></a-input></span>
+          <a-button class="searchbtn"><a-icon type="search"/>查询</a-button>
+          <a-button class="highbtn" @click="dohighcheck()"><a-icon style="color: #33A67CFF" type="security-scan"/>高级查询</a-button>
+          <a-button class="bigdelete" @click="start"><a-icon style="color: orange" type="delete"/>批量删除</a-button>
+          <a-button class="resetbtn"><a-icon style="color: #33A67CFF" type="redo"/>重置</a-button>
+        </a-col>
+      </a-row>
+      <a-row class="dotable">
+        <a-col :span="24">
+          <a-table :columns="PracticeColumns" :dataSource="PracticeData" :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" bordered>
+            <template slot="IdRender" slot-scope="text">
+              <span v-if="text === 0"></span>
+              <span v-else>{{ text | ellipsis }}</span>
+            </template>
+            <template slot="StyleRender" slot-scope="text">
+              <span v-if="text === null">
+                <a-input class="select_in" value="实操题"></a-input>
+              </span>
+              <span v-else>{{ text | ellipsis }}</span>
+            </template>
+            <template slot="StationRender" slot-scope="text">
+              <span v-if="text === null">
+                <a-select class="select_in" >
+                  <a-select-option value="1">1</a-select-option>
+                  <a-select-option value="2">1</a-select-option>
+                  <a-select-option value="3">1</a-select-option>
+                  <a-select-option value="4">1</a-select-option>
+                </a-select>
+              </span>
+              <span v-else>{{ text | ellipsis }}</span>
+            </template>
+            <template slot="ContentRender" slot-scope="text">
+              <span v-if="text === null">
+                <a-input class="putbtn"></a-input>
+              </span>
+              <span v-else>{{ text | ellipsis }}</span>
+            </template>
+            <template slot="KnowledgeRender" slot-scope="text">
+              <span v-if="text === null">
+                <a-input class="putbtn"></a-input>
+              </span>
+              <span v-else>{{ text | ellipsis }}</span>
+            </template>
+            <template slot="LevelRender" slot-scope="text">
+              <span v-if="text === null">
+                <a-select class="select_in2" >
+                  <a-select-option value="1">1</a-select-option>
+                  <a-select-option value="2">1</a-select-option>
+                  <a-select-option value="3">1</a-select-option>
+                  <a-select-option value="4">1</a-select-option>
+                </a-select>
+              </span>
+              <span v-else>{{ text | ellipsis }}</span>
+            </template>
+            <template slot="AreaRender" slot-scope="text">
+              <span v-if="text === null">
+                <a-input class="putbtn"></a-input>
+              </span>
+              <span v-else>{{ text | ellipsis }}</span>
+            </template>
+            <template slot="IstestRender" slot-scope="text">
+              <span v-if="text === null">
+                <a-switch/>
+              </span>
+              <span v-else>{{ text | ellipsis }}</span>
+            </template>
+            <template slot="VirtualRender" slot-scope="text">
+              <span v-if="text === null">
+                <a-input class="putbtn"/>
+              </span>
+              <span v-else>{{ text | ellipsis }}</span>
+            </template>
+            <template slot="CreaterRender" slot-scope="text">
+              <span v-if="text === null">
+                <a-input class="putbtn"/>
+              </span>
+              <span v-else>{{ text | ellipsis }}</span>
+            </template>
+            <template slot="CreattimeRender" slot-scope="text">
+              <span v-if="text === null">
+                <a-input class="putbtn"/>
+              </span>
+              <span v-else>{{ text }}</span>
+            </template>
+          </a-table>
+        </a-col>
+      </a-row>
+    </span>
+    <span v-if="!isShow">123</span>
   </div>
 </template>
 <script>
@@ -67,6 +128,7 @@ const PracticeColumns = [
   {
     title: '岗位',
     dataIndex: 'station',
+    width: 70,
     key: 'station',
     scopedSlots: { customRender: 'StationRender' },
     align: 'center'
@@ -102,6 +164,7 @@ const PracticeColumns = [
   {
     title: '是否练习题',
     dataIndex: 'istest',
+    width: 50,
     key: 'istest',
     scopedSlots: { customRender: 'IstestRender' },
     align: 'center'
@@ -109,6 +172,7 @@ const PracticeColumns = [
   {
     title: '操作',
     dataIndex: 'options',
+    width: 80,
     key: 'options',
     scopedSlots: { customRender: 'OptionsRender' },
     align: 'center'
@@ -171,6 +235,8 @@ export default {
     return {
       PracticeColumns,
       PracticeData,
+      isShow: true,
+      Visibal: false,
       selectedRowKeys: []
     }
   },
@@ -179,7 +245,19 @@ export default {
       return this.selectedRowKeys.length > 0
     }
   },
+  filters: {
+    ellipsis (value) {
+      if (!value) return ''
+      if (value.length > 8) {
+        return value.slice(0, 8) + '...'
+      }
+      return value
+    }
+  },
   methods: {
+    dohighcheck () {
+      this.$emit('closeMask', true)
+    },
     start () {
       setTimeout(() => {
         this.selectedRowKeys = []
@@ -188,6 +266,9 @@ export default {
     onSelectChange (selectedRowKeys) {
       console.log('selectedRowKeys changed: ', selectedRowKeys)
       this.selectedRowKeys = selectedRowKeys
+    },
+    addPractic () {
+      this.isShow = false
     }
   }
 }
@@ -195,6 +276,12 @@ export default {
 <style lang="less" scoped>
 /deep/ .ant-select-selection--single {
   height: 40px;
+}
+/deep/ .select_in .ant-select-selection--single {
+  height: 32px;
+}
+/deep/ .select_in2 .ant-select-selection--single {
+  height: 32px;
 }
 /deep/ .ant-select-selection__placeholder {
   top: 60%;
@@ -209,10 +296,28 @@ export default {
   width: 140px;
   height: 40px;
 }
+.putbtn {
+  width: 50px!important;
+}
 .select_in {
-  width: 65px;
+  display: inline-block;
   height: 32px;
+  width: 65px;
   font-size: 12px;
+
+  input {
+    height: 32px;
+  }
+}
+.select_in2 {
+  display: inline-block;
+  height: 32px;
+  width: 50px;
+  font-size: 12px;
+
+  input {
+    height: 32px;
+  }
 }
 .searchbtn,.highbtn,.resetbtn,.bigdelete {
   margin-left: 16px;
@@ -242,6 +347,10 @@ export default {
   height: 45px;
   color: #333;
 }
+.dotable {
+  padding-top: 30px;
+  padding-left: 15px;
+}
 .input_k {
   display: inline-block;
   width: 327px;
@@ -253,11 +362,11 @@ export default {
 .dopractic {
   width: 60%;
   min-width: 900px;
-  height: 100%;
-  margin-left: calc(16% + 209px);
+  height: calc(100% - 120px);
   margin-right: calc(16% + 209px);
   background-color: transparent;
-  float: left;
+  position: absolute;
+  left: calc(16% + 209px);
 
   .doInner {
     padding-top: 50px;
