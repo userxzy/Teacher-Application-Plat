@@ -14,7 +14,6 @@ const service = axios.create({
     'Content-Type': 'application/json;charset=UTF-8'
   }
 })
-console.log('dasdasasd')
 const err = error => {
   if (error.response) {
     const data = error.response.data

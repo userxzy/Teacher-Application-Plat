@@ -87,10 +87,10 @@
             <a-input class="putWidth"/>
             <a-button class="list_form set" type="primary">设置</a-button>
           </a-col>
-          <a-col :span="15" style="padding: 15px 0;">
+          <!-- <a-col :span="15" style="padding: 15px 0;">
             <span style="color: red;">*</span>数据同步:
             <a-button type="primary" style="margin-left: 10px;">同步</a-button>
-          </a-col>
+          </a-col> -->
         </a-row>
         <span v-for="(item2, index2) in isNum" :key="index2" class="list_bottom">
           <a-row v-if="item2 === item">

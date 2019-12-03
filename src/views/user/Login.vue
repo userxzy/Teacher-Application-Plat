@@ -364,6 +364,7 @@ export default {
   right: 470px;
   cursor: pointer;
   z-index: 999999;
+  background-color: #ddd;
 }
 .application_hot {
   display: inline-block;

@@ -941,6 +941,39 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@grapecity/spread-excelio@^13.0.1":
+  version "13.0.1"
+  resolved "https://registry.npm.taobao.org/@grapecity/spread-excelio/download/@grapecity/spread-excelio-13.0.1.tgz#7d68d19ec2feeb2bbf4bf6fedb40eb172316648b"
+  integrity sha1-fWjRnsL+6yu/S/b+20DrFyMWZIs=
+  dependencies:
+    "@grapecity/spread-sheets" "13.0.1"
+
+"@grapecity/spread-sheets-print@^13.0.1":
+  version "13.0.1"
+  resolved "https://registry.npm.taobao.org/@grapecity/spread-sheets-print/download/@grapecity/spread-sheets-print-13.0.1.tgz#9813fe82f927b3c3473fcff0c3a090b6b2061ee5"
+  integrity sha1-mBP+gvkns8NHP8/ww6CQtrIGHuU=
+  dependencies:
+    "@grapecity/spread-sheets" "13.0.1"
+
+"@grapecity/spread-sheets-resources-zh@^13.0.1":
+  version "13.0.1"
+  resolved "https://registry.npm.taobao.org/@grapecity/spread-sheets-resources-zh/download/@grapecity/spread-sheets-resources-zh-13.0.1.tgz#8e27e658b2f7ff960d023fc97042a5d4206e7a05"
+  integrity sha1-jifmWLL3/5YNAj/JcEKl1CBuegU=
+  dependencies:
+    "@grapecity/spread-sheets" "13.0.1"
+
+"@grapecity/spread-sheets-vue@^13.0.1":
+  version "13.0.1"
+  resolved "https://registry.npm.taobao.org/@grapecity/spread-sheets-vue/download/@grapecity/spread-sheets-vue-13.0.1.tgz#0e64e6c630508481b7d10ee0d2a65a1bd838003c"
+  integrity sha1-DmTmxjBQhIG30Q7g0qZaG9g4ADw=
+  dependencies:
+    "@grapecity/spread-sheets" "13.0.1"
+
+"@grapecity/spread-sheets@13.0.1", "@grapecity/spread-sheets@^13.0.1":
+  version "13.0.1"
+  resolved "https://registry.npm.taobao.org/@grapecity/spread-sheets/download/@grapecity/spread-sheets-13.0.1.tgz#b12bc992f69d70381cb30221537721a76b8ee445"
+  integrity sha1-sSvJkvadcDgcswIhU3chp2uO5EU=
+
 "@hapi/address@2.x.x":
   version "2.0.0"
   resolved "https://registry.npmjs.org/@hapi/address/-/address-2.0.0.tgz#9f05469c88cb2fd3dcd624776b54ee95c312126a"

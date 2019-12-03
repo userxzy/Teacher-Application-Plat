@@ -16,7 +16,7 @@
               <a-select-option value="3">3</a-select-option>
             </a-select>
           </span>
-          <span class="input_k"><a-input value="" style="height: 40px;"></a-input></span>
+          <span class="input_k"><a-input style="height: 40px;"></a-input></span>
           <a-button class="searchbtn"><a-icon type="search"/>查询</a-button>
           <a-button class="highbtn" @click="dohighcheck()"><a-icon style="color: #33A67CFF" type="security-scan"/>高级查询</a-button>
           <a-button class="bigdelete" @click="start"><a-icon style="color: orange" type="delete"/>批量删除</a-button>
@@ -82,6 +82,16 @@
               </span>
               <span v-else>{{ text | ellipsis }}</span>
             </template>
+            <template slot="OptionsRender" slot-scope="text">
+              <span v-for="(item, index) in text" :key="index">
+                <span v-if="item === 0"><a>查询</a>|</span>
+                <span v-if="item === 1"><a>重置</a></span>
+                <span v-if="item === 2"><a>查看</a></span>
+                <span v-if="item === 3">|<a>删除</a></span>
+                <span v-if="item === 4">|<a>添加至试卷</a></span>
+                <span v-if="item === 5">|<a>编辑</a></span>
+              </span>
+            </template>
             <template slot="VirtualRender" slot-scope="text">
               <span v-if="text === null">
                 <a-input class="putbtn"/>
@@ -104,10 +114,11 @@
         </a-col>
       </a-row>
     </span>
-    <span v-if="!isShow">123</span>
+    <add-practic v-if="!isShow" @backFun="backFun"></add-practic>
   </div>
 </template>
 <script>
+import AddPractic from '@/views/term/doterm/AddPractic.vue'
 const PracticeColumns = [
   {
     title: '序号',
@@ -172,7 +183,6 @@ const PracticeColumns = [
   {
     title: '操作',
     dataIndex: 'options',
-    width: 80,
     key: 'options',
     scopedSlots: { customRender: 'OptionsRender' },
     align: 'center'
@@ -223,7 +233,7 @@ const PracticeData = [
     level: '员工',
     area: '适用范围',
     istest: '练习题',
-    options: [0, 1],
+    options: [2, 3, 4, 5],
     virtualcor: '东莞白酒',
     creater: 'admin',
     creattime: '2019-11-28'
@@ -231,6 +241,9 @@ const PracticeData = [
 ]
 export default {
   name: 'DoPractic',
+  components: {
+    AddPractic
+  },
   data () {
     return {
       PracticeColumns,
@@ -255,6 +268,9 @@ export default {
     }
   },
   methods: {
+    backFun () {
+      this.isShow = true
+    },
     dohighcheck () {
       this.$emit('closeMask', true)
     },
@@ -285,6 +301,12 @@ export default {
 }
 /deep/ .ant-select-selection__placeholder {
   top: 60%;
+}
+/deep/ .ant-spin-container {
+  background-color: #fff;
+}
+/deep/ .ant-table-bordered .ant-table-body > table {
+  background-color: #fff;
 }
 .knowledge {
   display: inline-block;
@@ -367,6 +389,7 @@ export default {
   background-color: transparent;
   position: absolute;
   left: calc(16% + 209px);
+  overflow-y: auto;
 
   .doInner {
     padding-top: 50px;
@@ -374,11 +397,11 @@ export default {
 
     .btn1 {
       width: 150px;
-      height: 50px;
+      height: 45px;
       background-color: #4C9BF0FF;
       color: #fff;
       border-radius: 6px;
-      font-size: 18px;
+      font-size: 16px;
     }
   }
 }
