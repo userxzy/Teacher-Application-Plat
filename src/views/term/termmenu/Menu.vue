@@ -1,6 +1,7 @@
 <template>
   <div class="termmenu">
     <a-menu
+      @click="handleClick"
       :defaultSelectedKeys="[DefalutNum]"
       :defaultOpenKeys="['sub1']"
       style="width: 100%"
@@ -36,6 +37,19 @@ export default {
   data () {
     return {
       DefalutNum: (this.pageNum + 2).toString()
+    }
+  },
+  methods: {
+    handleClick (e) {
+      if (Number(e.key) === 1) {
+        this.$router.push({ path: '/' })
+      }
+      if (Number(e.key) === 2) {
+        this.$router.push({ path: '/term/practic?id=0' })
+      }
+      if (Number(e.key) === 6) {
+        this.$router.push({ path: '/term/practic?id=4' })
+      }
     }
   }
 }

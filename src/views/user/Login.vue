@@ -342,6 +342,7 @@ export default {
   background-color: #33a67d;
 }
 .main {
+  position: relative;
   padding: 10px;
 }
 .triangle {
@@ -360,11 +361,10 @@ export default {
   transform: rotate(45deg);
   -webkit-transform: rotate(45deg);
   position: absolute;
-  top: 234px;
-  right: 470px;
+  top: 38px;
+  left: 410px;
   cursor: pointer;
   z-index: 999999;
-  background-color: #ddd;
 }
 .application_hot {
   display: inline-block;

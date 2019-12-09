@@ -140,24 +140,18 @@
     <a-row class="add-innner2">
       <a-col :span="24" class="attribute2">
         <span class="attr_title">选择步骤:</span>
-        <a-select style="width: 30%; margin-left: 10px;" defaultValue="lucy" @change="handleSelect">
-          <a-select-option value="jack">Jack</a-select-option>
-          <a-select-option value="lucy">Lucy</a-select-option>
-          <a-select-option value="disabled" disabled>Disabled</a-select-option>
-          <a-select-option value="Yiminghe">yiminghe</a-select-option>
+        <a-select style="width: 30%; margin-left: 10px;" :defaultValue="3" @change="handleSelect">
+          <a-select-option v-for="(item5, index5) in selectStep" :key="index5" :value="item5.id">{{ item5.typeName }}</a-select-option>
         </a-select>
-        <div class="warn_line">请选择选择步骤!</div>
+        <!-- <div class="warn_line">请选择选择步骤!</div> -->
       </a-col>
     </a-row>
     <a-row class="add-innner2">
       <a-col :span="24" class="attribute2">
         <span style="float: left; width: 62%;">
           <span class="attr_title">账表种类:</span>
-          <a-select style="width: 35%; margin-left: 10px;" defaultValue="lucy" @change="handleSelect">
-            <a-select-option value="jack">Jack</a-select-option>
-            <a-select-option value="lucy">Lucy</a-select-option>
-            <a-select-option value="disabled" disabled>Disabled</a-select-option>
-            <a-select-option value="Yiminghe">yiminghe</a-select-option>
+          <a-select style="width: 35%; margin-left: 10px;" @change="handleSelect2">
+            <a-select-option v-for="(item6, index6) in selectNext" :key="index6" :value="item6.id">{{ item6.typeName }}</a-select-option>
           </a-select>
           <a-button @click="addListForm()" class="next_Btn"><a-icon type="plus"/>添加</a-button>
           <div class="warn_line">请选择账表种类!</div>
@@ -169,22 +163,20 @@
         </span>
       </a-col>
     </a-row>
+    <!-- 账表选择区域 -->
     <div v-if="listControl.isShow" class="list_account">
       <span v-for="(item, index) in listControl.NumList" :key="index" class="account_style">
         <a-row>
           <a-col :span="24">
-            <span class="list_title">步骤名称</span><a-button type="danger" class="cancle" @click="deleteItem(item)">删除</a-button>
+            <span class="list_title">步骤名称</span><!-- <a-button type="danger" class="cancle" @click="deleteItem(item)">删除</a-button> -->
           </a-col>
           <a-col :span="24" class="move_room">
             <span style="font-size: 16px;">选择账本:</span>
-            <a-select defaultValue="lucy" class="putWidth" @change="handleSelect">
-              <a-select-option value="jack">Jack</a-select-option>
-              <a-select-option value="lucy">Lucy</a-select-option>
-              <a-select-option value="disabled" disabled>Disabled</a-select-option>
-              <a-select-option value="Yiminghe">yiminghe</a-select-option>
+            <a-select class="putWidth" @change="handleSelect3">
+              <a-select-option v-for="(data1, ind) in selectBook[index]" :key="ind" :value="data1.id">{{ data1.sheetName }}</a-select-option>
             </a-select>
             <a-button class="list_form" @click="addForm(item)">添加账表</a-button>
-            <div class="warn_line" style="margin-left: 75px;">请选择步骤名称!</div>
+            <div class="warn_line" v-show="errorList[item - 1].state" style="margin-left: 75px;">请选择账表!</div>
           </a-col>
           <a-col :span="24" class="move_room" style="padding: 10px 0;">
             <span style="font-size: 16px;">分数检测模式:</span>
@@ -194,26 +186,28 @@
             </a-select>
           </a-col>
         </a-row>
+        <!-- 表格展示区域 -->
         <span v-for="(item2, index2) in isNum" :key="index2">
-          <div v-if="item2 === item" class="list_bottom" style="display: block;">
-            <span class="leftForm" :id="'sheet' + item2 "></span>
+          <div v-if="item2.i === item" class="list_bottom" style="display: block;">
+            <span class="leftForm" :id="'sheet' + item2.i "></span>
             <span class="rightForm">
               <!-- <span class="formitem">12365</span> -->
               <span class="form_inner">
                 <a-table
                   :columns="ResultColumns"
-                  :dataSource="tableList"
+                  :dataSource="arrtTable[item]"
                   :pagination="false"
                   size="small"
                   bordered
                 >
+                  <span v-if="item2.state"></span>
                   <template slot="CodeWorth" slot-scope="text3, arry3, index3">
-                    <input class="input_btn" type="number" v-model="inputVal[index3]" @focus="StoreScore()" @blur="InputScoreBlur(index3)"/>
+                    <input class="input_btn" type="number" v-model="inputList[item].inputVal[index3]" @focus="StoreScore()" @blur="InputScoreBlur(index3, item)"/>
                   </template>
                 </a-table>
                 <div class="total_code">
-                  <span class="total_title">总计</span>
-                  <span class="total_right">15</span>
+                  <span class="total_title" style="font-weight: bold">总计:</span>
+                  <span class="total_right" style="color: red;font-weight: bold;">{{ inputList[item].totalValue }}</span>
                 </div>
               </span>
             </span>
@@ -233,7 +227,7 @@ import '@grapecity/spread-sheets-vue'
 import '@grapecity/spread-sheets-resources-zh'
 import ExcelIO from '@grapecity/spread-excelio'
 import '@grapecity/spread-sheets-print'
-// import { SpreadApi } from '@/api/spread/spreadapi'
+import { SheetStepApi, SheetStepApiTwo, SheetStepApiNext, SheetStepApiDesc } from '@/api/practice/practiceapi'
 import $axios from 'axios'
 GC.Spread.Common.CultureManager.culture('zh-cn')
 
@@ -259,15 +253,6 @@ const ResultColumns = [
     scopedSlots: { customRender: 'CodeWorth' },
     align: 'center'
   }
-  // ,
-  // {
-  //   title: '操作',
-  //   dataIndex: 'options',
-  //   width: '50px',
-  //   key: 'options',
-  //   scopedSlots: { customRender: 'OptionsRender' },
-  //   align: 'center'
-  // }
 ]
 export default {
   name: 'AddPractic',
@@ -318,36 +303,138 @@ export default {
       accountBook: null,
       storeScore: null,
       inputVal: [],
+      inputList: {},
       // 给对象添加数组键值对区分表数据
       arrtTable: {},
-      tableList: [],
       idMove: '',
-      ScoreChangeNum: null
+      ScoreChangeNum: null,
+      isSheet: 0,
+      // 选择步骤数据
+      selectStep: [],
+      // 选择账表种类
+      selectIndex: 0,
+      selectNext: [],
+      // 选择账本数据
+      selectBook: [],
+      bookIndex: null,
+      errorList: []
     }
   },
-  // mounted () {
-  //   this.loadData()
-  // },
-  watch: {
-    idMove (val) {
-      this.loadData()
-    }
+  mounted () {
+    $axios.get(this.path + 'sheet/all').then(res => {
+      this.sheets = res.data
+    }).catch(err => {
+      console.log(err)
+    })
+    SheetStepApi().then(res => {
+      console.log('200')
+      console.log(res)
+    })
+    SheetStepApiTwo().then(res => {
+      if (res.code === 200) {
+        this.selectStep = res.data
+      }
+    })
+    SheetStepApiNext(3).then(res => {
+      if (res.code === 200) {
+        this.selectNext = res.data
+      }
+    })
   },
   methods: {
-    // SpreadJs表格的实现
-    StoreScore (index) {
-      this.storeScore = this.inputVal[index]
+    // 添加实操1
+    addListForm () {
+      const that = this
+      if (that.selectIndex === 0) {
+        alert('请选择账表种类')
+      } else {
+        that.listControl.isShow = true
+        that.listControl.num = that.listControl.num + 1
+        that.listControl.NumList.push(that.listControl.num)
+        // 错误提示
+        const y = [{
+          state: false
+        }]
+        that.errorList.push(y)
+        // that.$set(that.errorList[that.listControl.num], 'state', false)
+        SheetStepApiDesc(that.selectIndex).then(res => {
+          if (res.code === 200) {
+            that.selectBook.push(res.data)
+          }
+        })
+      }
     },
-    loadData () {
-      $axios.get(this.path + 'sheet/all').then(res => {
-        this.sheets = res.data
-        console.log(this.sheets)
-        this.loadSheet(0)
-      }).catch(err => {
-        console.log(err)
+    // 添加账表2
+    addForm (item) {
+      if (this.bookIndex === null) {
+        this.$set(this.errorList[item - 1], 'state', true)
+        return
+      } else {
+        this.$set(this.errorList[item - 1], 'state', false)
+      }
+      this.idMove = 'sheet' + item
+      const html = document.getElementById(this.idMove)
+      if (html != null) {
+        html.parentNode.parentNode.removeChild(html.parentNode)
+      }
+      this.isSheet = item
+      this.arrtTable[item] = []
+      this.inputList[item] = {
+        inputVal: [],
+        totalValue: 0
+      }
+      console.log('ashdahkafh')
+      console.log(this.arrtTable)
+      const f = {
+        i: item,
+        state: false
+      }
+      this.isNum.push(f)
+      this.addSeet()
+    },
+    // 删除实操
+    deleteItem (item) {
+      const arr = this.listControl.NumList
+      arr.splice(arr.findIndex(item2 => item2 === item), 1)
+      this.listControl.NumList = arr
+    },
+    handleSelect (value) {
+      // console.log(`selected ${value}`)
+      SheetStepApiNext(value).then(res => {
+        if (res.code === 200) {
+          this.selectNext = res.data
+        }
       })
     },
-    loadSheet (number) {
+    handleSelect2 (value) {
+      this.selectIndex = value
+    },
+    handleSelect3 (value) {
+      console.log(`selected ${value}`)
+      const that = this
+      that.bookIndex = value
+    },
+    // SpreadJs表格的实现
+    addSeet () {
+      let count = 1
+      const sheets = []
+      sheets[count] = {
+        index: this.isSheet,
+        sheetDivId: this.idMove,
+        scoreTableId: 'scoreTable' + this.isSheet,
+        row: 0,
+        col: 0,
+        scores: {},
+        spread: null,
+        tableCells: {}
+      }
+      let number = null
+      number = this.bookIndex - 1
+      this.loadSheet(number, sheets[count])
+      count++
+      this.bookIndex = null
+    },
+    loadSheet (number, sheetObject) {
       const that = this
       const excelIO = new ExcelIO.IO()
       const excelFilePath = this.path + 'loadToUrl'
@@ -356,16 +443,14 @@ export default {
       xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
       xhr.responseType = 'blob'
       xhr.onload = function (e) {
-        console.log(e)
-        console.log(this.status)
         if (this.status === 200) {
           // 从响应中获取二进制数据
           const blod = this.response
           excelIO.open(blod, function (json) {
             that.workbookObj = json
-            that.spread = new GC.Spread.Sheets.Workbook(document.getElementById(that.idMove))
-            that.spread.fromJSON(json)
-            that.bind()
+            sheetObject.spread = new GC.Spread.Sheets.Workbook(document.getElementById(that.idMove))
+            sheetObject.spread.fromJSON(json)
+            that.bind(sheetObject)
             that.init()
           }, function (e) {
             console.log(e)
@@ -375,177 +460,69 @@ export default {
       that.sheet = that.sheets[number]
       xhr.send('url=' + that.sheet.url)
     },
-    bind () {
+    bind (sheetObject) {
       const that = this
-      that.spread.bind(GC.Spread.Sheets.Events.CellClick, function (e, args) {
-        that.row = args.row
-        that.col = args.col
-        var cell = that.accountBook.tableCells[that.row + ',' + that.col]
-        var score = cell ? cell.score : ''
-        if (that.inputVal[0] === '' || that.inputVal[0] === null) {
-          that.inputVal[0] = score
-        } else {
-          that.inputVal.push(score)
-        }
+      sheetObject.spread.bind(GC.Spread.Sheets.Events.CellClick, function (e, args) {
+        sheetObject.row = args.row
+        sheetObject.col = args.col
       })
       // 表单值改变时触发
-      that.spread.bind(GC.Spread.Sheets.Events.ValueChanged, function (sender, args) {
+      sheetObject.spread.bind(GC.Spread.Sheets.Events.ValueChanged, function (sender, args) {
         const r = args.row
         const c = args.col
+        const key = r + ',' + c
+        // const oldValue = args.oldValue
         const newValue = args.newValue
         if (!newValue) {
-          that.cancelCellScore(r, c)
-        } else if (that.accountBook.tableCells[r + ',' + c]) {
-          that.accountBook.tableCells[r + ',' + c].result = newValue
-          that.showTable()
+          that.cancelCellScore(sheetObject, r, c)
         } else {
-          console.log('123465asd')
-          console.log(that.inputVal)
-          that.setCellScore(that.inputVal, 0)
+          sheetObject.tableCells[key] = {
+            result: newValue,
+            score: 1
+          }
         }
-      })
-      // 范围内变化, delete键触发
-      that.spread.bind(GC.Spread.Sheets.Events.RangeChanged, function (sender, args) {
-        const changedCells = args.changedCells
-        for (const i in changedCells) {
-          const cell = changedCells[i]
-          that.cancelCellScore(cell.row, cell.col)
-        }
+        that.showTable(sheetObject)
       })
     },
-    InputScoreBlur (index) {
-      this.ScoreChangeNum = index
-      this.setScore()
-    },
-    init () {
-      this.accountBooks = [{
-        number: 1, // 序号
-        accountId: this.sheet.id,
-        cellTotal: 0,
-        tableCells: {
-
-        }
-      }]
-      this.accountBook = this.accountBooks[0]
-    },
-    cancelCellScore (r, c) {
+    cancelCellScore (sheetObject, r, c) {
       const key = r + ',' + c
-      const cells = this.accountBook.tableCells
+      const cells = sheetObject.tableCells
       if (cells[key]) {
-        delete this.accountBook.tableCells[key]
-        this.accountBook.cellTotal--
-        this.showTable()
+        delete sheetObject.tableCells[key]
+        this.showTable(sheetObject)
       }
     },
-    showTable () {
+    showTable (sheetObject) {
       const that = this
-      const cells = this.accountBook.tableCells
-      console.log('cells')
-      console.log(cells)
+      const cells = sheetObject.tableCells
       let number = 1
-      that.tableList = []
-      for (const inx in cells) {
+      that.isNum[sheetObject.index - 1].state = false
+      that.arrtTable[sheetObject.index] = []
+      for (const key in cells) {
         const d = {
           number: number,
-          result: cells[ inx ].result,
-          score: cells[ inx ].score,
-          location: cells[ inx ].location
+          result: cells[key].result,
+          score: cells[key].score,
+          location: key
         }
-        that.tableList.push(d)
+        that.arrtTable[sheetObject.index].push(d)
         number++
       }
-      console.log(this.tableList)
+      that.isNum[sheetObject.index - 1].state = true
     },
-    setScore () {
-      if (!this.inputVal[this.ScoreChangeNum] || this.inputVal[this.ScoreChangeNum] < 0) {
-        alert('请输入正确的分数')
-      } else {
-        this.setCellScore(parseInt(this.inputVal[this.ScoreChangeNum]), 1)
-      }
+    StoreScore (index) {
+      this.storeScore = this.inputVal[index]
     },
-    setCellScore (score, status) {
-      const key = this.row + ',' + this.col
-      const row = this.row
-      const col = this.col
-      const cells = this.accountBook.tableCells
-      const resule = this.getResult(this.row, this.col)
-      if (this.ScoreChangeNum != null) {
-        const formCol = this.tableList[this.ScoreChangeNum].location.col
-        const formRow = this.tableList[this.ScoreChangeNum].location.row
-        if (row === formRow && col === formCol) {
-        } else if (status === 1) {
-          alert('表格对应错误，请重新选择填写')
-          this.inputVal[this.ScoreChangeNum] = ''
-          if (!resule) {
-            alert('请填写答案')
-            return
-          }
-          if (cells.key) {
-            cells[key].score = score
-          } else {
-            cells[key] = {
-              location: {
-                row,
-                col
-              },
-              result: resule,
-              score: 0,
-              correct: true
-            }
-          }
-          this.showTable()
-          return
-        }
-      }
-      if (!resule) {
-        alert('请填写答案')
-        return
-      }
-      if (cells.key) {
-        cells[key].score = score
-      } else {
-        cells[key] = {
-          location: {
-            row,
-            col
-          },
-          result: resule,
-          score: score,
-          correct: true
-        }
-      }
-      this.showTable()
-    },
-    getResult (row, col) {
-      const cell = this.spread.toJSON().sheets[this.sheet.sheetName].data.dataTable[row][col]
-      return cell.value
-    },
-    // 添加实操
-    BackBtn () {
-      this.$emit('backFun', true)
-    },
-    addListForm () {
-      console.log('ashdahkafh')
-      this.arrtTable = {}
-      this.listControl.isShow = true
-      this.listControl.num = this.listControl.num + 1
-      this.listControl.NumList.push(this.listControl.num)
-      this.listControl.NumList.forEach((code, index, arry) => {
-        this.arrtTable['tableList' + code] = []
+    InputScoreBlur (index, item) {
+      const that = this
+      that.isNum[item - 1].state = false
+      that.inputList[item].totalValue = 0
+      this.inputList[item].inputVal.forEach((code, index, arry) => {
+        that.inputList[item].totalValue = Number(that.inputList[item].totalValue) + Number(code)
       })
-      console.log(this.arrtTable)
-    },
-    deleteItem (item) {
-      const arr = this.listControl.NumList
-      arr.splice(arr.findIndex(item2 => item2 === item), 1)
-      this.listControl.NumList = arr
-    },
-    addForm (item) {
-      this.idMove = 'sheet' + item
-      this.isNum.push(item)
-    },
-    handleSelect (value) {
-      console.log(`selected ${value}`)
+      that.isNum[item - 1].state = true
+      console.log('inputList')
+      console.log(that.inputList)
     },
     // 是否共享
     onGroupChange (e) {
@@ -566,6 +543,10 @@ export default {
     },
     handleChange ({ fileList }) {
       this.fileList = fileList
+    },
+    // 返回键
+    BackBtn () {
+      this.$emit('backFun', true)
     }
   }
 }
