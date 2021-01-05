@@ -19,7 +19,7 @@
     "@grapecity/spread-sheets-resources-zh": "^13.0.1",
     "@grapecity/spread-sheets-vue": "^13.0.1",
     "ant-design-vue": "1.4.2",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "core-js": "^3.1.2",
     "enquire.js": "^2.1.6",
     "lodash.get": "^4.4.2",
